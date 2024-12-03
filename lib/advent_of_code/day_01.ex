@@ -2,45 +2,30 @@ defmodule AdventOfCode.Day01 do
   def part1(input) do
     input
     |> parse_input()
-    |> then(fn [l, r] ->
-      [Enum.sort(l), Enum.sort(r)]
-    end)
+    |> Enum.map(&Enum.sort/1)
     |> Enum.zip()
     |> Enum.map(fn {l, r} -> abs(l - r) end)
     |> Enum.sum()
   end
 
   def part2(input) do
-    [l, r] =
-      input
-      |> parse_input()
+    [l, r] = parse_input(input)
 
-    Enum.reduce(l, {0, %{}}, fn val, {res, cache} ->
-      cache =
-        Map.put_new_lazy(cache, val, fn ->
-          Enum.count(r, &(&1 == val))
-        end)
+    cache = Enum.frequencies(r)
 
-      {res + val * Map.get(cache, val), cache}
+    Enum.reduce(l, 0, fn val, acc ->
+      acc + val * Map.get(cache, val, 0)
     end)
-    |> elem(0)
   end
 
   defp parse_input(input) do
     input
-    |> String.split("\n")
-    |> :lists.droplast()
-    |> Enum.reduce([[], []], fn line, acc ->
-      [l, r] = String.split(line)
-      l = String.to_integer(l)
-      r = String.to_integer(r)
-
-      [tot_l, tot_r] = acc
-
-      tot_l = [l | tot_l]
-      tot_r = [r | tot_r]
-
-      [tot_l, tot_r]
+    |> String.split("\n", trim: true)
+    |> Enum.map(fn row ->
+      row
+      |> String.split()
+      |> Enum.map(&String.to_integer/1)
     end)
+    |> Enum.zip_with(&Function.identity/1)
   end
 end
