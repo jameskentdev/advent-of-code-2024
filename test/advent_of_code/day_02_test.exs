@@ -3,10 +3,23 @@ defmodule AdventOfCode.Day02Test do
 
   import AdventOfCode.Day02
 
-  @tag :skip
-  test "part1" do
-    input = nil
+  setup do
+    input = """
+    1 3 6 7 9
+    1 2 7 8 9
+    7 6 4 2 1
+    9 7 6 2 1
+    1 3 2 4 5
+    8 6 4 4 1
+    """
+
+    %{input: input}
+  end
+
+  test "part1", %{input: input} do
     result = part1(input)
+
+    IO.inspect(result)
 
     assert result
   end
